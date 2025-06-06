@@ -86,8 +86,10 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
             body: formData
         });
         const data = await response.json();
-        console.log(data.quiz);
-        if (data.quiz) {
+        // DEBUG: See what you actually get
+        console.log("Quiz data:", data.quiz);
+
+        if (Array.isArray(data.quiz)) {
             let html = `<h2>Quiz Output:</h2>`;
             data.quiz.forEach(q => {
                 html += `<div class="quiz-question">
@@ -98,10 +100,13 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
                         <li>C. ${q.choices.C}</li>
                         <li>D. ${q.choices.D}</li>
                     </ul>
-                    <em>Answer: ${q.answer}</em>
+                    <em style="color:#888;">Answer: ${q.answer}</em>
                 </div><hr>`;
             });
             resultDiv.innerHTML = html;
+        } else if (typeof data.quiz === "string") {
+            // fallback if backend returns plain text
+            resultDiv.innerHTML = `<h2>Quiz Output:</h2><pre>${data.quiz}</pre>`;
         } else if (data.error) {
             let errorMsg = data.error;
             if (typeof data.api_response === "object") {
