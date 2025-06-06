@@ -86,26 +86,66 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
             body: formData
         });
         const data = await response.json();
-        // DEBUG: See what you actually get
-        console.log("Quiz data:", data.quiz);
-
         if (Array.isArray(data.quiz)) {
-            let html = `<h2>Quiz Output:</h2>`;
-            data.quiz.forEach(q => {
-                html += `<div class="quiz-question">
-                    <strong>Q${q.number}:</strong> ${q.question}<br>
-                    <ul>
-                        <li>A. ${q.choices.A}</li>
-                        <li>B. ${q.choices.B}</li>
-                        <li>C. ${q.choices.C}</li>
-                        <li>D. ${q.choices.D}</li>
-                    </ul>
-                    <em style="color:#888;">Answer: ${q.answer}</em>
-                </div><hr>`;
-            });
-            resultDiv.innerHTML = html;
+            // Interactive quiz logic
+            let current = 0;
+            let userAnswers = [];
+            let quiz = data.quiz;
+
+            function showQuestion(idx) {
+                const q = quiz[idx];
+                resultDiv.innerHTML = `
+                    <h2>Question ${q.number} of ${quiz.length}</h2>
+                    <div class="quiz-question">
+                        <strong>${q.question}</strong><br>
+                        <form id="quizAnswerForm">
+                            <label><input type="radio" name="answer" value="A" required> A. ${q.choices.A}</label><br>
+                            <label><input type="radio" name="answer" value="B"> B. ${q.choices.B}</label><br>
+                            <label><input type="radio" name="answer" value="C"> C. ${q.choices.C}</label><br>
+                            <label><input type="radio" name="answer" value="D"> D. ${q.choices.D}</label><br>
+                            <button type="submit">Submit Answer</button>
+                        </form>
+                    </div>
+                `;
+                document.getElementById('quizAnswerForm').onsubmit = function(ev) {
+                    ev.preventDefault();
+                    const userAnswer = document.querySelector('input[name="answer"]:checked').value;
+                    userAnswers.push(userAnswer);
+                    current++;
+                    if (current < quiz.length) {
+                        showQuestion(current);
+                    } else {
+                        showResults();
+                    }
+                };
+            }
+
+            function showResults() {
+                let user_score = 0;
+                let correct_answers = [];
+                for (let i = 0; i < quiz.length; i++) {
+                    const correct = quiz[i].answer;
+                    const user = userAnswers[i];
+                    if (user === correct) user_score++;
+                    correct_answers.push([quiz[i].number, correct, user]);
+                }
+                let result_message = correct_answers.map(
+                    ([idx, correct, user]) =>
+                        `Q${idx} correct answer: ${correct}<br>&gt; your answer: ${user} ` +
+                        (user === correct ? "✅" : (["A","B","C","D"].includes(user) ? "❌" : ""))
+                ).join("<br>");
+                resultDiv.innerHTML = `
+                    <h2>✅ Quiz Completed!</h2>
+                    <div>${result_message}</div>
+                    <br>
+                    <strong>🎯 You got ${user_score}/${quiz.length} correct!</strong>
+                `;
+            }
+
+            // Start the quiz
+            showQuestion(current);
+
         } else if (typeof data.quiz === "string") {
-            // fallback if backend returns plain text
             resultDiv.innerHTML = `<h2>Quiz Output:</h2><pre>${data.quiz}</pre>`;
         } else if (data.error) {
             let errorMsg = data.error;
