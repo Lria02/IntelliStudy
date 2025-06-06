@@ -86,7 +86,7 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
             body: formData
         });
         const data = await response.json();
-        if (Array.isArray(data.quiz)) {
+        if (Array.isArray(data.quiz) && data.quiz.length > 0) {
             // Interactive quiz logic
             let current = 0;
             let userAnswers = [];
@@ -150,7 +150,7 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
             // Start the quiz
             showQuestion(current);
 
-        } else if (typeof data.quiz === "string") {
+        } else if (data.quiz && typeof data.quiz === "string") {
             resultDiv.innerHTML = `<h2>Quiz Output:</h2><pre>${data.quiz}</pre>`;
         } else if (data.error) {
             let errorMsg = data.error;
@@ -159,7 +159,7 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
             }
             resultDiv.innerHTML = "Error: " + errorMsg;
         } else {
-            resultDiv.textContent = "Unknown error occurred.";
+            resultDiv.textContent = "No quiz questions could be generated. Please try a different file.";
         }
     } catch (err) {
         resultDiv.textContent = "Request failed: " + err;
