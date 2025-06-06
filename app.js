@@ -87,7 +87,20 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
         });
         const data = await response.json();
         if (data.quiz) {
-            resultDiv.innerHTML = `<h2>Quiz Output:</h2><pre>${data.quiz}</pre>`;
+            let html = `<h2>Quiz Output:</h2>`;
+            data.quiz.forEach(q => {
+                html += `<div class="quiz-question">
+                    <strong>Q${q.number}:</strong> ${q.question}<br>
+                    <ul>
+                        <li>A. ${q.choices.A}</li>
+                        <li>B. ${q.choices.B}</li>
+                        <li>C. ${q.choices.C}</li>
+                        <li>D. ${q.choices.D}</li>
+                    </ul>
+                    <em>Answer: ${q.answer}</em>
+                </div><hr>`;
+            });
+            resultDiv.innerHTML = html;
         } else if (data.error) {
             let errorMsg = data.error;
             if (typeof data.api_response === "object") {
