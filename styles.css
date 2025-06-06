@@ -7,12 +7,13 @@ body {
 
 .container {
     max-width: 480px;
-    margin: 0 auto;
+    margin: 32px auto;
     padding: 24px 8px 48px 8px;
     background: #fff;
     min-height: 100vh;
     box-sizing: border-box;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+    border-radius: 16px;
 }
 
 h1 {
@@ -20,6 +21,42 @@ h1 {
     color: #2d3a4b;
     margin-bottom: 24px;
     font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.tab {
+    background: #e5e7eb;
+    color: #444;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+}
+
+.tab.active {
+    background: #4f8cff;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+}
+
+.tab-content {
+    background: #f8fafc;
+    border-radius: 0 0 12px 12px;
+    padding: 24px 16px 16px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
 }
 
 form {
@@ -49,7 +86,7 @@ form {
     display: none;
 }
 
-#submitBtn {
+button[type="submit"] {
     background: #4f8cff;
     color: #fff;
     border: none;
@@ -61,11 +98,11 @@ form {
     transition: background 0.2s;
 }
 
-#submitBtn:active {
+button[type="submit"]:active {
     background: #3466c2;
 }
 
-#result {
+#resultReviewer, #resultQuiz {
     margin-top: 24px;
     background: #f1f5fb;
     border-radius: 8px;
@@ -85,7 +122,7 @@ form {
     h1 {
         font-size: 1.3rem;
     }
-    #result {
+    #resultReviewer, #resultQuiz {
         font-size: 0.97rem;
         padding: 10px;
     }
