@@ -2,21 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IntelliStudy Reviewer Upload</title>
+    <title>IntelliStudy | AI Reviewer & Quiz Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Reviewer Generator</h1>
-        <form id="uploadForm">
-            <label for="fileInput" class="file-label">
-                <span id="fileName">Choose PDF or PPTX</span>
-                <input type="file" id="fileInput" name="file" accept=".pdf,.pptx" required>
-            </label>
-            <button type="submit" id="submitBtn">Upload & Generate</button>
-        </form>
-        <div id="result"></div>
+        <h1>IntelliStudy</h1>
+        <div class="tabs">
+            <button class="tab active" id="reviewerTab">Reviewer Generator</button>
+            <button class="tab" id="quizTab">Quiz Generator</button>
+        </div>
+        <div class="tab-content" id="reviewerContent">
+            <form id="uploadFormReviewer">
+                <label for="fileInputReviewer" class="file-label">
+                    <span id="fileNameReviewer">Choose PDF or PPTX</span>
+                    <input type="file" id="fileInputReviewer" name="file" accept=".pdf,.pptx" required>
+                </label>
+                <button type="submit" id="submitBtnReviewer">Upload & Generate Reviewer</button>
+            </form>
+            <div id="resultReviewer"></div>
+        </div>
+        <div class="tab-content" id="quizContent" style="display:none;">
+            <form id="uploadFormQuiz">
+                <label for="fileInputQuiz" class="file-label">
+                    <span id="fileNameQuiz">Choose PDF or PPTX</span>
+                    <input type="file" id="fileInputQuiz" name="file" accept=".pdf,.pptx" required>
+                </label>
+                <button type="submit" id="submitBtnQuiz">Upload & Generate Quiz</button>
+            </form>
+            <div id="resultQuiz"></div>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>
