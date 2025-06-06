@@ -185,3 +185,44 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
         resultDiv.textContent = "Request failed: " + err;
     }
 });
+
+function parseQuizFileContent(content) {
+    const question_blocks = content.split(/-{2,}/);
+    const quiz = [];
+    question_blocks.forEach((block, idx) => {
+        const q_match = block.match(/Q:\\s*(.*?)\\nType:\\s*(.*?)\\n/);
+        if (!q_match) return;
+        const question = q_match[1].trim();
+        const qtype = q_match[2].trim().toLowerCase();
+        let answer = "";
+        let choices = {};
+        if (qtype.includes("multiple")) {
+            const a = block.match(/A\\.\\s*(.*?)\\n/);
+            const b = block.match(/B\\.\\s*(.*?)\\n/);
+            const c = block.match(/C\\.\\s*(.*?)\\n/);
+            const d = block.match(/D\\.\\s*(.*?)\\n/);
+            const answer_match = block.match(/Answer:\\s*([ABCD])/);
+            choices = {
+                "A": a ? a[1].trim() : "",
+                "B": b ? b[1].trim() : "",
+                "C": c ? c[1].trim() : "",
+                "D": d ? d[1].trim() : "",
+            };
+            answer = answer_match ? answer_match[1].trim() : "";
+        } else if (qtype.includes("true")) {
+            const answer_match = block.match(/Answer:\\s*(True|False)/i);
+            answer = answer_match ? answer_match[1].trim() : "";
+        } else if (qtype.includes("short")) {
+            const answer_match = block.match(/Answer:\\s*(.*)/);
+            answer = answer_match ? answer_match[1].trim() : "";
+        }
+        quiz.push({
+            number: idx + 1,
+            question: question,
+            type: qtype,
+            choices: choices,
+            answer: answer
+        });
+    });
+    return quiz;
+}
