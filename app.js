@@ -94,22 +94,47 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
 
             function showQuestion(idx) {
                 const q = quiz[idx];
+                let formHtml = "";
+
+                if (q.type && q.type.includes("multiple")) {
+                    formHtml = `
+                        <label><input type="radio" name="answer" value="A" required> A. ${q.choices.A}</label><br>
+                        <label><input type="radio" name="answer" value="B"> B. ${q.choices.B}</label><br>
+                        <label><input type="radio" name="answer" value="C"> C. ${q.choices.C}</label><br>
+                        <label><input type="radio" name="answer" value="D"> D. ${q.choices.D}</label><br>
+                    `;
+                } else if (q.type && q.type.includes("true")) {
+                    formHtml = `
+                        <label><input type="radio" name="answer" value="True" required> True</label><br>
+                        <label><input type="radio" name="answer" value="False"> False</label><br>
+                    `;
+                } else if (q.type && q.type.includes("short")) {
+                    formHtml = `
+                        <input type="text" name="answer" required placeholder="Type your answer here"><br>
+                    `;
+                } else {
+                    formHtml = `<div>Unknown question type.</div>`;
+                }
+
                 resultDiv.innerHTML = `
                     <h2>Question ${q.number} of ${quiz.length}</h2>
                     <div class="quiz-question">
                         <strong>${q.question}</strong><br>
                         <form id="quizAnswerForm">
-                            <label><input type="radio" name="answer" value="A" required> A. ${q.choices.A}</label><br>
-                            <label><input type="radio" name="answer" value="B"> B. ${q.choices.B}</label><br>
-                            <label><input type="radio" name="answer" value="C"> C. ${q.choices.C}</label><br>
-                            <label><input type="radio" name="answer" value="D"> D. ${q.choices.D}</label><br>
+                            ${formHtml}
                             <button type="submit">Submit Answer</button>
                         </form>
                     </div>
                 `;
+
                 document.getElementById('quizAnswerForm').onsubmit = function(ev) {
                     ev.preventDefault();
-                    const userAnswer = document.querySelector('input[name="answer"]:checked').value;
+                    let userAnswer;
+                    if (q.type && q.type.includes("short")) {
+                        userAnswer = document.querySelector('input[name="answer"]').value.trim();
+                    } else {
+                        userAnswer = document.querySelector('input[name="answer"]:checked').value;
+                    }
                     userAnswers.push(userAnswer);
                     current++;
                     if (current < quiz.length) {
