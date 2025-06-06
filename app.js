@@ -86,6 +86,7 @@ document.getElementById('uploadFormQuiz').addEventListener('submit', async funct
             body: formData
         });
         const data = await response.json();
+        console.log(data.quiz);
         if (data.quiz) {
             let html = `<h2>Quiz Output:</h2>`;
             data.quiz.forEach(q => {
