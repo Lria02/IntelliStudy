@@ -23,9 +23,14 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
         });
         const data = await response.json();
         if (data.reviewer) {
-            resultDiv.innerHTML = `<h2>AI Reviewer Output:</h2><pre>${data.reviewer}</pre>`;
+            resultDiv.innerHTML = `<h2>Reviewer Output:</h2><pre>${data.reviewer}</pre>`;
         } else if (data.error) {
-            resultDiv.textContent = "Error: " + data.error;
+            // Show detailed error if available
+            let errorMsg = data.error;
+            if (typeof data.api_response === "object") {
+                errorMsg += "<br><pre>" + JSON.stringify(data.api_response, null, 2) + "</pre>";
+            }
+            resultDiv.innerHTML = "Error: " + errorMsg;
         } else {
             resultDiv.textContent = "Unknown error occurred.";
         }
